@@ -1,7 +1,7 @@
 
-use std::{convert::TryFrom, ffi::0sString};
+use std::{convert::TryFrom, ffi::OsString};
 
-use crate::packet::PacketParseError;
+use crate::errors::PacketParseError;
 
 #[derive(Debug)]
 pub enum Packet {

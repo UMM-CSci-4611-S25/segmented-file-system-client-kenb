@@ -5,29 +5,17 @@
 // delete it and write your own code with the same function signature.
 
 mod packet;
+mod errors;
 
 use std::{
     io::{self, Write},
     net::UdpSocket,
 };
 
-#[derive(Debug)]
-pub enum ClientError {
-    IoError(std::io::Error),
-    PacketParseError(PacketParseError),
-}
-
-impl From<std::io::Error> for ClientError {
-    fn from(e: std::io::Error) -> Self {
-        ClientError::IoError(e)
-    }
-}
-
-impl From<PacketParseError> for ClientError {
-    fn from(e: PacketParseError) -> Self {
-        Self::PacketParseError(e)
-    }
-}
+use crate::{
+    errors::ClientError,
+    packet::Packet,
+};
 
 fn main() -> Result<(), ClientError> {
     let sock = UdpSocket::bind("0.0.0.0:7077")?;
