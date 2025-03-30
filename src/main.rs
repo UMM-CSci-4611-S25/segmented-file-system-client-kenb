@@ -1,13 +1,10 @@
-fn main() {
-    println!("Hello, world!");
-}
 
 // Below is a version of the `main` function and some error types. This assumes
 // the existence of types like `FileManager`, `Packet`, and `PacketParseError`.
 // You can use this code as a starting point for the exercise, or you can
 // delete it and write your own code with the same function signature.
 
-/*
+mod packet;
 
 use std::{
     io::{self, Write},
@@ -55,5 +52,3 @@ fn main() -> Result<(), ClientError> {
 
     Ok(())
 }
-
- */
