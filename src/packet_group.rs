@@ -24,19 +24,23 @@ pub struct PacketGroup {
 impl PacketGroup {
     pub fn process_packet(){
         // Placeholder implementation
+        todo!()
     }
     
     fn process_header(){
         // Placeholder implementation
+        todo!()
     }
 
     fn process_data(){
         // Placeholder implementation
+        todo!()
+        
     }
 
     pub fn received_all_packets(&self) -> bool {
         // Placeholder implementation
-        true
+        todo!()
     }
 
     pub fn write_file(&self) -> io::Result<()> {

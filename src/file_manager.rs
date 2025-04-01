@@ -15,11 +15,12 @@ pub struct FileManager {
 impl FileManager {
     pub fn received_all_packets(&self) -> bool {
         // Placeholder implementation
-        true
+        todo!()
     }
 
     pub fn process_packet(&mut self, _packet: Packet) {
         // Placeholder implementation
+        todo!()
     }
 
     pub fn write_all_files(&self) -> Result<(), std::io::Error> {
