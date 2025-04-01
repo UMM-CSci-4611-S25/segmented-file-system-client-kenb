@@ -16,6 +16,7 @@ pub struct Header {
     pub file_name: OsString,
 }
 
+// The structure of the data packet
 #[derive(Debug, PartialEq)]
 pub struct Data {
     pub file_id: u8,
@@ -24,6 +25,7 @@ pub struct Data {
     pub data: Vec<u8>,
 }
 
+// parsing a packet
 impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 

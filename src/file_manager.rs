@@ -6,6 +6,7 @@ use crate::{
     packet_group::PacketGroup,
 };
 
+// FileManager is responsible for managing the files being received
 #[allow(unused)]
 pub struct FileManager {
     files: HashMap<u8, PacketGroup>,

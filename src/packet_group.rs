@@ -12,6 +12,7 @@ use crate::packet::{
     Packet
 };
 
+// PacketGroup contains a file_name, expected packet count, and a map of packets
 #[allow(unused)]
 pub struct PacketGroup {
     pub file_name: Option<OsString>,
