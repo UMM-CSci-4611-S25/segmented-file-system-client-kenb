@@ -1,36 +1,19 @@
-fn main() {
-    println!("Hello, world!");
-}
-
 // Below is a version of the `main` function and some error types. This assumes
 // the existence of types like `FileManager`, `Packet`, and `PacketParseError`.
 // You can use this code as a starting point for the exercise, or you can
 // delete it and write your own code with the same function signature.
 
-/*
+mod errors;
+mod file_manager;
+mod packet;
+mod packet_group;
 
 use std::{
     io::{self, Write},
     net::UdpSocket,
 };
 
-#[derive(Debug)]
-pub enum ClientError {
-    IoError(std::io::Error),
-    PacketParseError(PacketParseError),
-}
-
-impl From<std::io::Error> for ClientError {
-    fn from(e: std::io::Error) -> Self {
-        ClientError::IoError(e)
-    }
-}
-
-impl From<PacketParseError> for ClientError {
-    fn from(e: PacketParseError) -> Self {
-        Self::PacketParseError(e)
-    }
-}
+use crate::{errors::ClientError, file_manager::FileManager, packet::Packet};
 
 fn main() -> Result<(), ClientError> {
     let sock = UdpSocket::bind("0.0.0.0:7077")?;
@@ -55,5 +38,3 @@ fn main() -> Result<(), ClientError> {
 
     Ok(())
 }
-
- */
