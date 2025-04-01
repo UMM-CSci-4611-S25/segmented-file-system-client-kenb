@@ -1,4 +1,3 @@
-
 use std::{convert::TryFrom, ffi::OsString};
 
 use crate::errors::PacketParseError;
@@ -40,7 +39,6 @@ impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
     fn try_from(_value: &[u8]) -> Result<Self, Self::Error> {
-
         // Check if the packet is too short
         if _value.len() < 4 {
             return Err(PacketParseError::TooShort);
@@ -53,11 +51,12 @@ impl TryFrom<&[u8]> for Packet {
             // Header packet
             let header = Header {
                 file_id: status_byte,
-                file_name: OsString::from(String::from_utf8(_value[2..].to_vec())
-                .map_err(|_| PacketParseError::InvalidPacketFormat)?),
+                file_name: OsString::from(
+                    String::from_utf8(_value[2..].to_vec())
+                        .map_err(|_| PacketParseError::InvalidPacketFormat)?,
+                ),
             };
-            return Ok(Packet::Header(header))
-
+            return Ok(Packet::Header(header));
         } else {
             // Data packet
             let data = Data {
@@ -66,7 +65,7 @@ impl TryFrom<&[u8]> for Packet {
                 is_last_packet: status_byte & 0x02 != 0,
                 data: _value[4..].to_vec(),
             };
-            return Ok(Packet::Data(data))
+            return Ok(Packet::Data(data));
         }
     }
 }

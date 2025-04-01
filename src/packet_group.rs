@@ -6,11 +6,7 @@ use std::{
 };
 
 #[allow(unused)]
-use crate::packet::{
-    Data,
-    Header,
-    Packet
-};
+use crate::packet::{Data, Header, Packet};
 
 // PacketGroup contains a file_name, expected packet count, and a map of packets
 #[allow(unused)]
@@ -22,20 +18,19 @@ pub struct PacketGroup {
 
 #[allow(dead_code)]
 impl PacketGroup {
-    pub fn process_packet(){
-        // Placeholder implementation
-        todo!()
-    }
-    
-    fn process_header(){
+    pub fn process_packet() {
         // Placeholder implementation
         todo!()
     }
 
-    fn process_data(){
+    fn process_header() {
         // Placeholder implementation
         todo!()
-        
+    }
+
+    fn process_data() {
+        // Placeholder implementation
+        todo!()
     }
 
     pub fn received_all_packets(&self) -> bool {

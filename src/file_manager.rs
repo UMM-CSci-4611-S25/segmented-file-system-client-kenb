@@ -1,10 +1,6 @@
-
 use std::collections::HashMap;
 
-use crate::{
-    packet::Packet,
-    packet_group::PacketGroup,
-};
+use crate::{packet::Packet, packet_group::PacketGroup};
 
 // FileManager is responsible for managing the files being received
 #[allow(unused)]
