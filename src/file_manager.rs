@@ -1,3 +1,12 @@
+
+use std::collections::HashMap;
+
+use crate::{
+    packet::Packet,
+    packet_group::PacketGroup,
+};
+
+#[allow(unused)]
 pub struct FileManager {
     files: HashMap<u8, PacketGroup>,
 }

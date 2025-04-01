@@ -1,11 +1,13 @@
 // Custom error types for parsing
 
 #[derive(Debug)]
+#[allow(unused)]
 pub enum PacketParseError {
     TooShort,
     InvalidPacketFormat,
 }
 
+#[allow(unused)]
 #[derive(Debug)]
 pub enum ClientError {
     IoError(std::io::Error),

@@ -6,6 +6,8 @@
 
 mod packet;
 mod errors;
+mod file_manager;
+mod packet_group;
 
 use std::{
     io::{self, Write},
@@ -15,6 +17,7 @@ use std::{
 use crate::{
     errors::ClientError,
     packet::Packet,
+    file_manager::FileManager,
 };
 
 fn main() -> Result<(), ClientError> {

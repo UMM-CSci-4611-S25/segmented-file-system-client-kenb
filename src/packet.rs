@@ -4,6 +4,7 @@ use std::{convert::TryFrom, ffi::OsString};
 use crate::errors::PacketParseError;
 
 #[derive(Debug)]
+#[allow(unused)]
 pub enum Packet {
     Header(Header),
     Data(Data),
