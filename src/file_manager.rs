@@ -40,3 +40,13 @@ impl Default for FileManager {
         }
     }
 }
+
+// methods used for testing, worried about their security implications
+impl FileManager {
+    pub fn insert_packet_group(&mut self, file_id: u8, packet_group: PacketGroup) {
+        self.files.insert(file_id, packet_group);
+    }
+    pub fn get_packet_group(&self, file_id: u8) -> Option<&PacketGroup> {
+        self.files.get(&file_id)
+    }
+}

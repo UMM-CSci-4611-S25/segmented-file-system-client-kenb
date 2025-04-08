@@ -96,10 +96,4 @@ mod tests {
             panic!("Expected Data packet");
         }
     }
-
-    #[test]
-    fn test_file_manager_default() {}
-
-    #[test]
-    fn test_packet_group_process_packet() {}
 }
