@@ -57,7 +57,7 @@ impl PacketGroup {
     //         None => false,
     //     }
     // }
-    pub fn received_all_packets(&self) -> bool {
+    pub fn all_packets_received(&self) -> bool {
         println!(
             "Checking if all packets are received for file: {:?}",
             self.file_name

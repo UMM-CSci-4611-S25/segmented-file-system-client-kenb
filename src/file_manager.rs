@@ -20,13 +20,14 @@ impl FileManager {
             println!(
                 "File ID: {}, Received: {}",
                 file_id,
-                file_group.received_all_packets()
+                file_group.all_packets_received()
             );
         }
-        self.files.len() == 0 || self.files.values().all(|file| file.received_all_packets())
+        self.files.len() == 0 || self.files.values().all(|file| file.all_packets_received())
     }
 
     pub fn process_packet(&mut self, _packet: Packet) {
+        println!("Processing packet: {:?}", _packet);
         let file_id = match &_packet {
             Packet::Header(header) => header.file_id,
             Packet::Data(data) => data.file_id,

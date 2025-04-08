@@ -41,7 +41,7 @@ mod tests {
         packet_group.expected_packet_count = Some(2);
         packet_group.packets.insert(0, vec![1, 2, 3]);
         packet_group.packets.insert(1, vec![4, 5, 6]);
-        assert!(packet_group.received_all_packets());
+        assert!(packet_group.all_packets_received());
     }
 
     #[test]

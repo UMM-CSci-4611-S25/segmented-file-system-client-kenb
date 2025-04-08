@@ -14,7 +14,6 @@ pub struct Header {
     pub file_name: OsString,
 }
 
-// The structure of the data packet
 #[derive(Debug, PartialEq)]
 pub struct Data {
     pub file_id: u8,
@@ -23,59 +22,82 @@ pub struct Data {
     pub data: Vec<u8>,
 }
 
-// // Check if the packet is a data packet
-// fn is_data_packet(value: &[u8]) -> bool {
-//     (status_byte & 0x01) != 0 // First bit indicates a data packet
-// }
-
-// // Check if the packet is the last packet
-// fn is_last_packet(value: &[u8]) -> bool {
-//     (status_byte & 0x02) != 0 // Second bit indicates if it's the last packet
-// }
-
-// parsing a packet
 impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
-    fn try_from(_value: &[u8]) -> Result<Self, Self::Error> {
-        println!("Raw packet data: {:?}", _value);
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        println!("Raw packet data: {:?}", value);
 
-        // // Check if the packet is too short
-        // if _value.len() < 3 {
-        //     return Err(PacketParseError::TooShort);
-        // }
+        // Check if the packet is too short
+        if value.len() < 3 {
+            return Err(PacketParseError::TooShort);
+        }
 
-        // Set the status_byte and file_id
-        let status_byte = _value[0];
-        let file_id = _value[1];
+        let status_byte = value[0];
+        let _file_id = value[1];
 
-        // // Validate the status byte
-        // if status_byte & 0xFC != 0 {
-        //     return Err(PacketParseError::InvalidPacketFormat);
-        // }
+        // Validate the status byte
+        if status_byte & 0xFC != 0 {
+            return Err(PacketParseError::InvalidPacketFormat);
+        }
 
-        // Check if the packet is a header or data packet
+        // Split to use the Header try_from or Data try_from
         if (status_byte & 0x01) == 0 {
             // Header packet
-            let header = Header {
-                file_id,
-                file_name: OsString::from(
-                    String::from_utf8(_value[2..].to_vec())
-                        .map_err(|_| PacketParseError::InvalidPacketFormat)?,
-                ),
-            };
-            println!("Parsed header packet: {:?}", header);
-            return Ok(Packet::Header(header));
+            Header::try_from(value).map(Packet::Header)
         } else {
             // Data packet
-            let data = Data {
-                file_id,
-                packet_number: u16::from_be_bytes([_value[2], _value[3]]),
-                is_last_packet: status_byte & 0x02 != 0,
-                data: _value[4..].to_vec(),
-            };
-            println!("Parsed data packet: {:?}", data);
-            return Ok(Packet::Data(data));
+            Data::try_from(value).map(Packet::Data)
         }
+    }
+}
+
+impl TryFrom<&[u8]> for Header {
+    type Error = PacketParseError;
+
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        if value.len() < 3 {
+            return Err(PacketParseError::TooShort);
+        }
+
+        let file_id = value[1];
+        let file_name = OsString::from(
+            String::from_utf8(value[2..].to_vec())
+                .map_err(|_| PacketParseError::InvalidPacketFormat)?,
+        );
+
+        println!(
+            "Parsed header packet: file_id = {}, file_name = {:?}",
+            file_id, file_name
+        );
+
+        Ok(Header { file_id, file_name })
+    }
+}
+
+impl TryFrom<&[u8]> for Data {
+    type Error = PacketParseError;
+
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        if value.len() < 4 {
+            return Err(PacketParseError::TooShort);
+        }
+
+        let file_id = value[1];
+        let packet_number = u16::from_be_bytes([value[2], value[3]]);
+        let is_last_packet = value[0] & 0x02 != 0;
+        let data = value[4..].to_vec();
+
+        println!(
+            "Parsed data packet: file_id = {}, packet_number = {}, is_last_packet = {}, data = {:?}",
+            file_id, packet_number, is_last_packet, data
+        );
+
+        Ok(Data {
+            file_id,
+            packet_number,
+            is_last_packet,
+            data,
+        })
     }
 }
