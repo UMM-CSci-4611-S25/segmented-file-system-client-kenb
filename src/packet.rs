@@ -3,7 +3,6 @@ use std::{convert::TryFrom, ffi::OsString};
 use crate::errors::PacketParseError;
 
 #[derive(Debug)]
-#[allow(unused)]
 pub enum Packet {
     Header(Header),
     Data(Data),
@@ -39,18 +38,21 @@ impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
     fn try_from(_value: &[u8]) -> Result<Self, Self::Error> {
-        // Check if the packet is too short
-        if _value.len() < 4 {
-            return Err(PacketParseError::TooShort);
-        }
+        println!("Raw packet data: {:?}", _value);
 
+        // // Check if the packet is too short
+        // if _value.len() < 3 {
+        //     return Err(PacketParseError::TooShort);
+        // }
+
+        // Set the status_byte and file_id
         let status_byte = _value[0];
         let file_id = _value[1];
 
-        // Validate the status byte
-        if status_byte & 0xFC != 0 {
-            return Err(PacketParseError::InvalidPacketFormat);
-        }
+        // // Validate the status byte
+        // if status_byte & 0xFC != 0 {
+        //     return Err(PacketParseError::InvalidPacketFormat);
+        // }
 
         // Check if the packet is a header or data packet
         if (status_byte & 0x01) == 0 {
@@ -62,6 +64,7 @@ impl TryFrom<&[u8]> for Packet {
                         .map_err(|_| PacketParseError::InvalidPacketFormat)?,
                 ),
             };
+            println!("Parsed header packet: {:?}", header);
             return Ok(Packet::Header(header));
         } else {
             // Data packet
@@ -71,6 +74,7 @@ impl TryFrom<&[u8]> for Packet {
                 is_last_packet: status_byte & 0x02 != 0,
                 data: _value[4..].to_vec(),
             };
+            println!("Parsed data packet: {:?}", data);
             return Ok(Packet::Data(data));
         }
     }

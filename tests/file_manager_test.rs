@@ -147,4 +147,28 @@ mod tests {
         assert!(file_group.is_some());
         assert_eq!(file_group.unwrap().packets.len(), 1);
     }
+
+    #[test]
+    fn test_file_manager_process_packet() {
+        let mut file_manager = FileManager::default();
+
+        let header_packet = Packet::Header(Header {
+            file_id: 1,
+            file_name: OsString::from("test_file"),
+        });
+        let data_packet = Packet::Data(Data {
+            file_id: 1,
+            packet_number: 0,
+            is_last_packet: true,
+            data: vec![1, 2, 3],
+        });
+
+        file_manager.process_packet(header_packet);
+        file_manager.process_packet(data_packet);
+
+        let file_group = file_manager.get_packet_group(1).unwrap();
+        assert_eq!(file_group.file_name, Some(OsString::from("test_file")));
+        assert_eq!(file_group.packets.len(), 1);
+        assert_eq!(file_group.packets.get(&0), Some(&vec![1, 2, 3]));
+    }
 }

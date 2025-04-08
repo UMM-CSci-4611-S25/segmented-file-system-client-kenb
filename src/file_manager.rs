@@ -9,6 +9,20 @@ pub struct FileManager {
 
 impl FileManager {
     pub fn received_all_packets(&self) -> bool {
+        println!("Checking if all packets are received...");
+
+        if self.files.is_empty() {
+            println!("No files to process.");
+            return true;
+        }
+
+        for (file_id, file_group) in &self.files {
+            println!(
+                "File ID: {}, Received: {}",
+                file_id,
+                file_group.received_all_packets()
+            );
+        }
         self.files.len() == 0 || self.files.values().all(|file| file.received_all_packets())
     }
 

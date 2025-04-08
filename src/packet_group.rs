@@ -51,10 +51,33 @@ impl PacketGroup {
     }
 
     // received_all_packets checks if all packets have been received
+    // pub fn received_all_packets(&self) -> bool {
+    //     match self.expected_packet_count {
+    //         Some(expected_count) => self.packets.len() == expected_count,
+    //         None => false,
+    //     }
+    // }
     pub fn received_all_packets(&self) -> bool {
+        println!(
+            "Checking if all packets are received for file: {:?}",
+            self.file_name
+        );
+    
         match self.expected_packet_count {
-            Some(expected_count) => self.packets.len() == expected_count,
-            None => false,
+            Some(expected_count) => {
+                let all_received = self.packets.len() == expected_count;
+                println!(
+                    "Expected packets: {}, Received packets: {}, All received: {}",
+                    expected_count,
+                    self.packets.len(),
+                    all_received
+                );
+                all_received
+            }
+            None => {
+                println!("Expected packet count is not set. Returning false.");
+                false
+            }
         }
     }
 

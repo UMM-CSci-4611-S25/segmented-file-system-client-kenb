@@ -1,4 +1,4 @@
-use segmented_file_system_client::packet::{Header, Packet, Data};
+use segmented_file_system_client::packet::{Data, Header, Packet};
 use segmented_file_system_client::packet_group::PacketGroup;
 
 #[cfg(test)]
@@ -70,5 +70,29 @@ mod tests {
         let mut packet_group = PacketGroup::default();
         packet_group.file_name = Some(OsString::from("test_file.txt"));
         assert!(packet_group.write_file().is_err());
+    }
+
+    #[test]
+    fn test_packet_group_process_packet() {
+        let mut packet_group = PacketGroup::default();
+
+        let header_packet = Packet::Header(Header {
+            file_id: 1,
+            file_name: OsString::from("test_file"),
+        });
+        let data_packet = Packet::Data(Data {
+            file_id: 1,
+            packet_number: 0,
+            is_last_packet: true,
+            data: vec![1, 2, 3],
+        });
+
+        packet_group.process_packet(header_packet);
+        packet_group.process_packet(data_packet);
+
+        assert_eq!(packet_group.file_name, Some(OsString::from("test_file")));
+        assert_eq!(packet_group.packets.len(), 1);
+        assert_eq!(packet_group.packets.get(&0), Some(&vec![1, 2, 3]));
+        assert_eq!(packet_group.expected_packet_count, Some(1));
     }
 }

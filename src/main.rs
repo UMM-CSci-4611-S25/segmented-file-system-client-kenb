@@ -32,8 +32,18 @@ fn main() -> Result<(), ClientError> {
     let mut file_manager = FileManager::default();
 
     while !file_manager.received_all_packets() {
+        println!("Waiting to receive a packet...");
         let len = sock.recv(&mut buf)?;
-        let packet: Packet = buf[..len].try_into()?;
+        println!("Received {} bytes: {:?}", len, &buf[..len]);
+
+        let packet: Packet = match buf[..len].try_into() {
+            Ok(packet) => packet,
+            Err(e) => {
+                eprintln!("Error parsing packet: {:?}", e);
+                continue;
+            }
+        };
+
         print!(".");
         println!("Received packet: {:?}", packet);
         io::stdout().flush()?;
