@@ -25,3 +25,30 @@ impl From<PacketParseError> for ClientError {
         Self::PacketParseError(e)
     }
 }
+
+#[derive(Debug)]
+pub enum PacketGroupError {
+    MissingPacket(u16),
+    IoError(std::io::Error),
+    MissingFileName,
+}
+
+impl std::fmt::Display for PacketGroupError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            PacketGroupError::MissingPacket(packet_number) => {
+                write!(f, "Missing packet: {}", packet_number)
+            }
+            PacketGroupError::MissingFileName => write!(f, "Missing file name"),
+            PacketGroupError::IoError(err) => write!(f, "IO error: {}", err),
+        }
+    }
+}
+
+impl std::error::Error for PacketGroupError {}
+
+impl From<std::io::Error> for PacketGroupError {
+    fn from(err: std::io::Error) -> Self {
+        PacketGroupError::IoError(err)
+    }
+}
