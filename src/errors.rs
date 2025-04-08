@@ -1,7 +1,6 @@
 // Custom error types for parsing
 
 #[derive(Debug)]
-#[allow(unused)]
 pub enum PacketParseError {
     TooShort,
     InvalidPacketFormat,
@@ -31,6 +30,7 @@ pub enum PacketGroupError {
     MissingPacket(u16),
     IoError(std::io::Error),
     MissingFileName,
+    MissingPacketCount
 }
 
 impl std::fmt::Display for PacketGroupError {
@@ -41,6 +41,7 @@ impl std::fmt::Display for PacketGroupError {
             }
             PacketGroupError::MissingFileName => write!(f, "Missing file name"),
             PacketGroupError::IoError(err) => write!(f, "IO error: {}", err),
+            PacketGroupError::MissingPacketCount => write!(f, "Missing packet count"),
         }
     }
 }

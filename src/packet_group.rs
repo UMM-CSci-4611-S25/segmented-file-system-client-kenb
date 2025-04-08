@@ -58,6 +58,18 @@ impl PacketGroup {
             .as_ref()
             .ok_or(PacketGroupError::MissingFileName)?;
 
+        // Check if all expected packets are present
+        if let Some(expected_count) = self.expected_packet_count {
+            for packet_number in 0..expected_count as u16 {
+                if !self.packets.contains_key(&packet_number) {
+                    return Err(PacketGroupError::MissingPacket(packet_number));
+                }
+            }
+        } else {
+            // If expected packet count is not set, we cannot check for missing packets
+            return Err(PacketGroupError::MissingPacketCount);
+        }
+
         let mut file = File::create(file_name)?;
         let mut packet_count: Vec<u16> = self.packets.keys().cloned().collect();
         packet_count.sort();
@@ -66,8 +78,6 @@ impl PacketGroup {
         for packet_number in packet_count {
             if let Some(data) = self.packets.get(&packet_number) {
                 file.write_all(data)?;
-            } else {
-                return Err(PacketGroupError::MissingPacket(packet_number));
             }
         }
         Ok(())
