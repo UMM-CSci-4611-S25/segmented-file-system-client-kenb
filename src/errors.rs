@@ -30,7 +30,7 @@ pub enum PacketGroupError {
     MissingPacket(u16),
     IoError(std::io::Error),
     MissingFileName,
-    MissingPacketCount
+    MissingPacketCount,
 }
 
 impl std::fmt::Display for PacketGroupError {
@@ -51,5 +51,21 @@ impl std::error::Error for PacketGroupError {}
 impl From<std::io::Error> for PacketGroupError {
     fn from(err: std::io::Error) -> Self {
         PacketGroupError::IoError(err)
+    }
+}
+impl From<PacketGroupError> for std::io::Error {
+    fn from(err: PacketGroupError) -> Self {
+        match err {
+            PacketGroupError::IoError(io_err) => io_err,
+            PacketGroupError::MissingPacket(_) => {
+                std::io::Error::new(std::io::ErrorKind::Other, "Missing packet error")
+            }
+            PacketGroupError::MissingFileName => {
+                std::io::Error::new(std::io::ErrorKind::InvalidInput, "Missing file name")
+            }
+            PacketGroupError::MissingPacketCount => {
+                std::io::Error::new(std::io::ErrorKind::InvalidData, "Missing packet count")
+            }
+        }
     }
 }
