@@ -27,6 +27,9 @@ impl FileManager {
 
     pub fn write_all_files(&self) -> Result<(), std::io::Error> {
         for file_group in self.files.values() {
+            if let Some(file_name) = &file_group.file_name {
+                println!("Writing file: {:?}", file_name);
+            }
             file_group.write_file()?;
         }
         Ok(())
@@ -42,6 +45,7 @@ impl Default for FileManager {
 }
 
 // methods used for testing, worried about their security implications
+#[allow(unused)]
 impl FileManager {
     pub fn insert_packet_group(&mut self, file_id: u8, packet_group: PacketGroup) {
         self.files.insert(file_id, packet_group);

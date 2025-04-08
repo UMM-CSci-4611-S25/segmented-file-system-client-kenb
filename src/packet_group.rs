@@ -25,13 +25,20 @@ impl PacketGroup {
     // process_packet processes a packet and updates the file name and packet count
     pub fn process_packet(&mut self, packet: Packet) {
         match packet {
-            Packet::Header(header) => self.process_header(header),
-            Packet::Data(data) => self.process_data(data),
+            Packet::Header(header) => {
+                println!("Processing header: {:?}", header.file_name);
+                self.process_header(header);
+            }
+            Packet::Data(data) => {
+                println!("Processing data packet: {:?}", data.packet_number);
+                self.process_data(data);
+            }
         }
     }
 
     // process_header processes a header packet and sets the file name
     fn process_header(&mut self, header: Header) {
+        println!("Processing header: {:?}", header.file_name);
         self.file_name = Some(header.file_name);
     }
 

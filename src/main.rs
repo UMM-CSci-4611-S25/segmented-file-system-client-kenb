@@ -15,13 +15,18 @@ use std::{
 
 use crate::{errors::ClientError, file_manager::FileManager, packet::Packet};
 
+const LOCAL_ADDR: &str = "0.0.0.0:7077";
+const REMOTE_ADDR: &str = "127.0.0.1:6014";
+
 fn main() -> Result<(), ClientError> {
-    let sock = UdpSocket::bind("0.0.0.0:7077")?;
+    let sock = UdpSocket::bind(LOCAL_ADDR)?;
+    println!("Listening on {}", LOCAL_ADDR);
 
-    let remote_addr = "127.0.0.1:6014";
-    sock.connect(remote_addr)?;
+    sock.connect(REMOTE_ADDR)?;
+    println!("Connected to {}", REMOTE_ADDR);
+    println!("Waiting for packets...");
+
     let mut buf = [0; 1028];
-
     let _ = sock.send(&buf[..1028]);
 
     let mut file_manager = FileManager::default();
@@ -30,11 +35,14 @@ fn main() -> Result<(), ClientError> {
         let len = sock.recv(&mut buf)?;
         let packet: Packet = buf[..len].try_into()?;
         print!(".");
+        println!("Received packet: {:?}", packet);
         io::stdout().flush()?;
         file_manager.process_packet(packet);
     }
 
+    println!("\nAll packets received. Writing files...");
     file_manager.write_all_files()?;
+    println!("Files written successfully.");
 
     Ok(())
 }

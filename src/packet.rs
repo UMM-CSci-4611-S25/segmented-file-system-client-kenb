@@ -45,12 +45,18 @@ impl TryFrom<&[u8]> for Packet {
         }
 
         let status_byte = _value[0];
+        let file_id = _value[1];
+
+        // Validate the status byte
+        if status_byte & 0xFC != 0 {
+            return Err(PacketParseError::InvalidPacketFormat);
+        }
 
         // Check if the packet is a header or data packet
         if (status_byte & 0x01) == 0 {
             // Header packet
             let header = Header {
-                file_id: status_byte,
+                file_id,
                 file_name: OsString::from(
                     String::from_utf8(_value[2..].to_vec())
                         .map_err(|_| PacketParseError::InvalidPacketFormat)?,
@@ -60,7 +66,7 @@ impl TryFrom<&[u8]> for Packet {
         } else {
             // Data packet
             let data = Data {
-                file_id: status_byte,
+                file_id,
                 packet_number: u16::from_be_bytes([_value[2], _value[3]]),
                 is_last_packet: status_byte & 0x02 != 0,
                 data: _value[4..].to_vec(),

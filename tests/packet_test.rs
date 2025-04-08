@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn test_parse_data_packet() {
-        let raw_data: &[u8] = &[1, 1, 0, 1, b'd', b'a', b't', b'a'];
+        let raw_data: &[u8] = &[3, 1, 0, 1, b'd', b'a', b't', b'a'];
         let packet = Packet::try_from(raw_data).unwrap();
         if let Packet::Data(data) = packet {
             assert_eq!(data.file_id, 1);
