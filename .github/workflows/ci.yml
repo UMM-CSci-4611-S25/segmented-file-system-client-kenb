@@ -31,11 +31,12 @@ jobs:
       - name: Run Rust unit tests
         run: cargo test --all
 
-      - name: Set up test files
+      # Step 5: Set up src
+      - name: Set up src directory for transferred files
         run: |
           mkdir -p src
           cp tests/testFiles/* src/
 
-      # Step 5: Run bats tests
+      # Step 6: Run bats tests
       - name: Run bats tests
         run: bats tests/client_tests.sh
