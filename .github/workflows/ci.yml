@@ -1,0 +1,36 @@
+name: CI - Run Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Rust
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      # Step 3: Install bats
+      - name: Install bats
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats
+
+      # Step 4: Run Rust unit tests
+      - name: Run Rust unit tests
+        run: cargo test --all
+
+      # Step 5: Run bats tests
+      - name: Run bats tests
+        run: bats tests/client_tests.sh
