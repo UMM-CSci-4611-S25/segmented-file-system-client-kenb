@@ -44,7 +44,7 @@ fn run_client() -> Result<(), ClientError> {
     while !file_manager.received_all_packets() {
         println!("Waiting to receive a packet...");
         let len = sock.recv(&mut buf)?;
-        println!("Received {} bytes: {:?}", len, &buf[..len]);
+        // println!("Received {} bytes: {:?}", len, &buf[..len]);
 
         let packet: Packet = match buf[..len].try_into() {
             Ok(packet) => packet,
@@ -54,8 +54,8 @@ fn run_client() -> Result<(), ClientError> {
             }
         };
 
-        print!(".");
-        println!("Received packet: {:?}", packet);
+        // print!(".");
+        // println!("Received packet: {:?}", packet);
         io::stdout().flush()?;
         file_manager.process_packet(packet);
     }

@@ -11,12 +11,12 @@ pub struct FileManager {
 impl FileManager {
     // checks if all packets are received for all files
     pub fn received_all_packets(&self) -> bool {
-        self.files.values().all(|file| file.all_packets_received())
+        !self.files.is_empty() && self.files.values().all(|file| file.all_packets_received())
     }
 
     // routes packets to the correct PacketGroup
     pub fn process_packet(&mut self, packet: Packet) {
-        println!("Processing packet: {:?}", packet);
+        // println!("Processing packet: {:?}", packet);
 
         // set file_id based on the packet type
         let file_id = match &packet {

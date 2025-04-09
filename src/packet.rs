@@ -30,7 +30,7 @@ impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        println!("Raw packet data: {:?}", value);
+        // println!("Raw packet data: {:?}", value);
 
         // Check if the packet is too short
         if value.len() < MIN_PACKET_SIZE {
@@ -100,8 +100,8 @@ impl TryFrom<&[u8]> for Data {
         let data = value[4..].to_vec();
 
         println!(
-            "Parsed data packet: file_id = {}, packet_number = {}, is_last_packet = {}, data = {:?}",
-            file_id, packet_number, is_last_packet, data
+            "Parsed data packet: file_id = {}, packet_number = {}, is_last_packet = {}",
+            file_id, packet_number, is_last_packet
         );
 
         Ok(Data {
