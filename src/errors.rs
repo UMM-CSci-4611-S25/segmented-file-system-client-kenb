@@ -6,7 +6,6 @@ pub enum PacketParseError {
     InvalidPacketFormat,
 }
 
-#[allow(unused)]
 #[derive(Debug)]
 pub enum ClientError {
     IoError(std::io::Error),

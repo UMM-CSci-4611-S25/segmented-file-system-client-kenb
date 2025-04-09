@@ -2,6 +2,8 @@ use std::{convert::TryFrom, ffi::OsString};
 
 use crate::errors::PacketParseError;
 
+const MIN_PACKET_SIZE: usize = 3; // Minimum size for a valid packet
+
 #[derive(Debug)]
 pub enum Packet {
     Header(Header),
@@ -23,6 +25,7 @@ pub struct Data {
     pub data: Vec<u8>,
 }
 
+// TryFrom implementation for Packet (Top level packet type)
 impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
@@ -30,7 +33,7 @@ impl TryFrom<&[u8]> for Packet {
         println!("Raw packet data: {:?}", value);
 
         // Check if the packet is too short
-        if value.len() < 3 {
+        if value.len() < MIN_PACKET_SIZE {
             return Err(PacketParseError::TooShort);
         }
 
@@ -53,6 +56,7 @@ impl TryFrom<&[u8]> for Packet {
     }
 }
 
+// TryFrom implementation for Header
 impl TryFrom<&[u8]> for Header {
     type Error = PacketParseError;
 
@@ -67,17 +71,21 @@ impl TryFrom<&[u8]> for Header {
                 .map_err(|_| PacketParseError::InvalidPacketFormat)?,
         );
         let expected_packet_count = u16::from_be_bytes([value[0], value[1]]) as usize;
-        
 
         println!(
             "Parsed header packet: file_id = {}, file_name = {:?}",
             file_id, file_name
         );
 
-        Ok(Header { file_id, file_name, expected_packet_count })
+        Ok(Header {
+            file_id,
+            file_name,
+            expected_packet_count,
+        })
     }
 }
 
+// TryFrom implementation for Data packet
 impl TryFrom<&[u8]> for Data {
     type Error = PacketParseError;
 

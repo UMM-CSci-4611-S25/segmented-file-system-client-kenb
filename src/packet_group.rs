@@ -20,9 +20,9 @@ impl Default for PacketGroup {
     }
 }
 
-// PacketGroup is responsible for processing packets and writing files
+// Implementation for processing packets and writing files
 impl PacketGroup {
-    // process_packet processes a packet and updates the file name and packet count
+    // process packet and update the state of the PacketGroup
     pub fn process_packet(&mut self, packet: Packet) {
         match packet {
             Packet::Header(header) => {
@@ -36,13 +36,13 @@ impl PacketGroup {
         }
     }
 
-    // process_header processes a header packet and sets the file name
+    // sets the file name for the PacketGroup
     fn process_header(&mut self, header: Header) {
         println!("Processing header: {:?}", header.file_name);
         self.file_name = Some(header.file_name);
     }
 
-    // process_data processes a data packet and increments the expected packet count
+    // inserts the data into the packets map and updates the expected packet count
     fn process_data(&mut self, data: Data) {
         self.packets.insert(data.packet_number, data.data);
         if data.is_last_packet {
@@ -50,13 +50,7 @@ impl PacketGroup {
         }
     }
 
-    // received_all_packets checks if all packets have been received
-    // pub fn received_all_packets(&self) -> bool {
-    //     match self.expected_packet_count {
-    //         Some(expected_count) => self.packets.len() == expected_count,
-    //         None => false,
-    //     }
-    // }
+    // Checks if all packets are received for a SINGLE file
     pub fn all_packets_received(&self) -> bool {
         println!(
             "Checking if all packets are received for file: {:?}",
@@ -81,14 +75,14 @@ impl PacketGroup {
         }
     }
 
-    // write_all_files writes all packets to the file
+    // writes the file in the PacketGroup to the src directory
     pub fn write_file(&self) -> Result<(), PacketGroupError> {
         let file_name = self
             .file_name
             .as_ref()
             .ok_or(PacketGroupError::MissingFileName)?;
 
-        // Write to src directory - appeasing the bats tests
+        // Write to src directory - appeasing the bats test gods
         let file_path = format!("src/{}", file_name.to_string_lossy());
 
         // Check if all expected packets are present
