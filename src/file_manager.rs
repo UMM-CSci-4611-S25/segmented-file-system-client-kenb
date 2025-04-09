@@ -35,9 +35,9 @@ impl FileManager {
     // writes all the files that are ready to be written
     pub fn write_all_files(&self) -> Result<(), std::io::Error> {
         for file_group in self.files.values() {
-            if let Some(file_name) = &file_group.file_name {
-                println!("Writing file: {:?}", file_name);
-            }
+            // if let Some(file_name) = &file_group.file_name {
+            //     println!("Writing file: {:?}", file_name);
+            // }
             file_group.write_file()?;
         }
         Ok(())

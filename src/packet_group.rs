@@ -26,11 +26,11 @@ impl PacketGroup {
     pub fn process_packet(&mut self, packet: Packet) {
         match packet {
             Packet::Header(header) => {
-                println!("Processing header: {:?}", header.file_name);
+                // println!("Processing header: {:?}", header.file_name);
                 self.process_header(header);
             }
             Packet::Data(data) => {
-                println!("Processing data packet: {:?}", data.packet_number);
+                // println!("Processing data packet: {:?}", data.packet_number);
                 self.process_data(data);
             }
         }
@@ -38,7 +38,7 @@ impl PacketGroup {
 
     // sets the file name for the PacketGroup
     fn process_header(&mut self, header: Header) {
-        println!("Processing header: {:?}", header.file_name);
+        // println!("Processing header: {:?}", header.file_name);
         self.file_name = Some(header.file_name);
     }
 
@@ -52,24 +52,24 @@ impl PacketGroup {
 
     // Checks if all packets are received for a SINGLE file
     pub fn all_packets_received(&self) -> bool {
-        println!(
-            "Checking if all packets are received for file: {:?}",
-            self.file_name
-        );
+        // println!(
+        //     "Checking if all packets are received for file: {:?}",
+        //     self.file_name
+        // );
 
         match self.expected_packet_count {
             Some(expected_count) => {
                 let all_received = self.packets.len() == expected_count;
-                println!(
-                    "Expected packets: {}, Received packets: {}, All received: {}",
-                    expected_count,
-                    self.packets.len(),
-                    all_received
-                );
+                // println!(
+                //     "Expected packets: {}, Received packets: {}, All received: {}",
+                //     expected_count,
+                //     self.packets.len(),
+                //     all_received
+                // );
                 all_received
             }
             None => {
-                println!("Expected packet count is not set. Returning false.");
+                // println!("Expected packet count is not set. Returning false.");
                 false
             }
         }
