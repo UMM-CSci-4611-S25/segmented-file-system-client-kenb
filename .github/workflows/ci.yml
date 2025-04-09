@@ -1,6 +1,9 @@
-name: CI - Run Tests
+name: CI - Unit tests and Bats tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
