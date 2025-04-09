@@ -56,7 +56,7 @@ impl PacketGroup {
             "Checking if all packets are received for file: {:?}",
             self.file_name
         );
-    
+
         match self.expected_packet_count {
             Some(expected_count) => {
                 let all_received = self.packets.len() == expected_count;

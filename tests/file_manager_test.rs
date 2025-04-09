@@ -12,7 +12,25 @@ mod tests {
 
     #[test]
     fn test_received_all_packets() {
-        let file_manager = FileManager::default();
+        let mut file_manager = FileManager::default();
+
+        // Simulate receiving packets
+        let header_packet = Packet::Header(Header {
+            file_id: 1,
+            file_name: OsString::from("test_file"),
+            expected_packet_count: 1,
+        });
+        let data_packet = Packet::Data(Data {
+            file_id: 1,
+            packet_number: 0,
+            is_last_packet: true,
+            data: vec![1, 2, 3],
+        });
+
+        file_manager.process_packet(header_packet);
+        file_manager.process_packet(data_packet);
+
+        // Now assert that all packets have been received
         assert!(file_manager.received_all_packets());
     }
 
@@ -24,6 +42,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 2,
         });
         let data_packet1 = Packet::Data(Data {
             file_id: 1,
@@ -42,6 +61,7 @@ mod tests {
         file_manager.process_packet(data_packet1);
         file_manager.process_packet(data_packet2);
 
+        // Now assert that all packets have been received
         assert!(file_manager.received_all_packets());
     }
 
@@ -52,6 +72,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 2,
         });
         file_manager.process_packet(header_packet);
 
@@ -68,7 +89,7 @@ mod tests {
         // Verify that not all packets have been received
         assert!(!file_manager.received_all_packets());
 
-        // Optionally, verify the state of the PacketGroup
+        // Verify the state of the PacketGroup
         let file_group = file_manager.get_packet_group(1).unwrap();
         assert_eq!(file_group.file_name, Some(OsString::from("test_file")));
         assert_eq!(file_group.packets.len(), 1);
@@ -81,6 +102,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 2,
         });
         let data_packet = Packet::Data(Data {
             file_id: 1,
@@ -104,6 +126,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 2,
         });
         let data_packet = Packet::Data(Data {
             file_id: 1,
@@ -122,14 +145,18 @@ mod tests {
         file_manager.process_packet(data_packet);
         file_manager.process_packet(data_packet2);
 
+        // Ensure the directory exists
+        std::fs::create_dir_all("src").unwrap();
+
+        // Assert that files are written successfully
         assert!(file_manager.write_all_files().is_ok());
 
         // Check if the file was created and contains the expected data
-        let file_contents = fs::read("test_file").unwrap();
+        let file_contents = fs::read("src/test_file").unwrap();
         assert_eq!(file_contents, vec![1, 2, 3, 4, 5, 6]);
 
         // Clean up the test file
-        fs::remove_file("test_file").unwrap();
+        fs::remove_file("src/test_file").unwrap();
     }
 
     #[test]
@@ -155,6 +182,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 1,
         });
         let data_packet = Packet::Data(Data {
             file_id: 1,

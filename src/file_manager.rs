@@ -9,13 +9,8 @@ pub struct FileManager {
 }
 
 impl FileManager {
-    // check if all packets for all PacketGroups have been received
+    // checks if all packets are received for all files
     pub fn received_all_packets(&self) -> bool {
-        if self.files.len() < 3 {
-            println!("Haven’t received all packets yet");
-            return false;
-        }
-
         self.files.values().all(|file| file.all_packets_received())
     }
 

@@ -4,12 +4,8 @@ use segmented_file_system_client::packet_group::PacketGroup;
 #[cfg(test)]
 mod tests {
 
-    use std::ffi::OsString;
-    use std::fs;
-
     use super::*;
-    // use crate::packet::{Header, Data};
-    // use crate::errors::PacketGroupError;
+    use std::ffi::OsString;
 
     #[test]
     fn test_process_header_sets_file_name() {
@@ -17,6 +13,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 1,
         });
         packet_group.process_packet(header_packet);
         assert_eq!(packet_group.file_name, Some(OsString::from("test_file")));
@@ -52,11 +49,18 @@ mod tests {
         packet_group.packets.insert(0, vec![1, 2, 3]);
         packet_group.packets.insert(1, vec![4, 5, 6]);
 
+        // Ensure the directory exists
+        std::fs::create_dir_all("src").unwrap();
+
         // Assuming write_file is implemented correctly
         assert!(packet_group.write_file().is_ok());
 
-        //delete test file created
-        fs::remove_file("test_file.txt").unwrap();
+        // Check if the file was created and contains the expected data
+        let file_contents = std::fs::read("src/test_file.txt").unwrap();
+        assert_eq!(file_contents, vec![1, 2, 3, 4, 5, 6]);
+
+        // Clean up the test file
+        std::fs::remove_file("src/test_file.txt").unwrap();
     }
 
     #[test]
@@ -79,6 +83,7 @@ mod tests {
         let header_packet = Packet::Header(Header {
             file_id: 1,
             file_name: OsString::from("test_file"),
+            expected_packet_count: 1,
         });
         let data_packet = Packet::Data(Data {
             file_id: 1,
