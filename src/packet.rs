@@ -72,10 +72,10 @@ impl TryFrom<&[u8]> for Header {
         );
         let expected_packet_count = u16::from_be_bytes([value[0], value[1]]) as usize;
 
-        println!(
-            "Parsed header packet: file_id = {}, file_name = {:?}",
-            file_id, file_name
-        );
+        // println!(
+        //     "Parsed header packet: file_id = {}, file_name = {:?}",
+        //     file_id, file_name
+        // );
 
         Ok(Header {
             file_id,
@@ -99,10 +99,10 @@ impl TryFrom<&[u8]> for Data {
         let is_last_packet = value[0] & 0x02 != 0;
         let data = value[4..].to_vec();
 
-        println!(
-            "Parsed data packet: file_id = {}, packet_number = {}, is_last_packet = {}",
-            file_id, packet_number, is_last_packet
-        );
+        // println!(
+        //     "Parsed data packet: file_id = {}, packet_number = {}, is_last_packet = {}",
+        //     file_id, packet_number, is_last_packet
+        // );
 
         Ok(Data {
             file_id,

@@ -10,8 +10,14 @@ pub struct FileManager {
 
 impl FileManager {
     // checks if all packets are received for all files
+    // pub fn received_all_packets(&self) -> bool {
+    //     !self.files.is_empty() && self.files.values().all(|file| file.all_packets_received())
+    // }
+
     pub fn received_all_packets(&self) -> bool {
-        !self.files.is_empty() && self.files.values().all(|file| file.all_packets_received())
+        !self.files.is_empty()
+            && self.files.values().all(|file| file.all_packets_received())
+            && self.files.values().all(|file| file.file_name.is_some())
     }
 
     // routes packets to the correct PacketGroup
@@ -35,9 +41,9 @@ impl FileManager {
     // writes all the files that are ready to be written
     pub fn write_all_files(&self) -> Result<(), std::io::Error> {
         for file_group in self.files.values() {
-            if let Some(file_name) = &file_group.file_name {
-                println!("Writing file: {:?}", file_name);
-            }
+            // if let Some(file_name) = &file_group.file_name {
+            //     println!("Writing file: {:?}", file_name);
+            // }
             file_group.write_file()?;
         }
         Ok(())
