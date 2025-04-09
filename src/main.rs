@@ -31,41 +31,7 @@ fn main() -> Result<(), ClientError> {
 
     let mut file_manager = FileManager::default();
 
-    // while !file_manager.received_all_packets() {
-    //     println!("Waiting to receive a packet...");
-    //     let len = sock.recv(&mut buf)?;
-    //     println!("Received {} bytes: {:?}", len, &buf[..len]);
-
-    //     let packet: Packet = match buf[..len].try_into() {
-    //         Ok(packet) => packet,
-    //         Err(e) => {
-    //             eprintln!("Error parsing packet: {:?}", e);
-    //             continue;
-    //         }
-    //     };
-
-    //     print!(".");
-    //     println!("Received packet: {:?}", packet);
-    //     io::stdout().flush()?;
-    //     file_manager.process_packet(packet);
-    // }
-
-    let timeout = Duration::from_secs(5); // Set a timeout of 30 seconds
-    let start_time = Instant::now();
-    let max_iterations = 100; // Set a maximum iteration limit
-    let mut iteration_count = 0;
-
-    loop {
-        if start_time.elapsed() > timeout {
-            eprintln!("Error: Timeout reached while waiting for packets.");
-            break;
-        }
-
-        if iteration_count >= max_iterations {
-            eprintln!("Error: Maximum iteration limit reached.");
-            break;
-        }
-
+    while !file_manager.received_all_packets() {
         println!("Waiting to receive a packet...");
         let len = sock.recv(&mut buf)?;
         println!("Received {} bytes: {:?}", len, &buf[..len]);
@@ -82,13 +48,47 @@ fn main() -> Result<(), ClientError> {
         println!("Received packet: {:?}", packet);
         io::stdout().flush()?;
         file_manager.process_packet(packet);
-
-        if file_manager.received_all_packets() {
-            break;
-        }
-
-        iteration_count += 1;
     }
+
+    // let timeout = Duration::from_secs(5); // Set a timeout of 30 seconds
+    // let start_time = Instant::now();
+    // let max_iterations = 100; // Set a maximum iteration limit
+    // let mut iteration_count = 0;
+
+    // loop {
+    //     if start_time.elapsed() > timeout {
+    //         eprintln!("Error: Timeout reached while waiting for packets.");
+    //         break;
+    //     }
+
+    //     if iteration_count >= max_iterations {
+    //         eprintln!("Error: Maximum iteration limit reached.");
+    //         break;
+    //     }
+
+    //     println!("Waiting to receive a packet...");
+    //     let len = sock.recv(&mut buf)?;
+    //     println!("Received {} bytes: {:?}", len, &buf[..len]);
+
+    //     let packet: Packet = match buf[..len].try_into() {
+    //         Ok(packet) => packet,
+    //         Err(e) => {
+    //             eprintln!("Error parsing packet: {:?}", e);
+    //             continue;
+    //         }
+    //     };
+
+    //     print!(".");
+    //     println!("Received packet: {:?}", packet);
+    //     io::stdout().flush()?;
+    //     file_manager.process_packet(packet);
+
+    //     if file_manager.received_all_packets() {
+    //         break;
+    //     }
+
+    //     iteration_count += 1;
+    // }
 
     if file_manager.received_all_packets() {
         println!("\nAll packets received. Writing files...");

@@ -88,6 +88,9 @@ impl PacketGroup {
             .as_ref()
             .ok_or(PacketGroupError::MissingFileName)?;
 
+        // Write to src directory - appeasing the bats tests
+        let file_path = format!("src/{}", file_name.to_string_lossy());
+
         // Check if all expected packets are present
         if let Some(expected_count) = self.expected_packet_count {
             for packet_number in 0..expected_count as u16 {
@@ -100,7 +103,7 @@ impl PacketGroup {
             return Err(PacketGroupError::MissingPacketCount);
         }
 
-        let mut file = File::create(file_name)?;
+        let mut file = File::create(file_path)?;
         let mut packet_count: Vec<u16> = self.packets.keys().cloned().collect();
         packet_count.sort();
 
