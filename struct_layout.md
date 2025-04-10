@@ -31,15 +31,17 @@ pub enum Packet {
 pub struct Header {
     pub file_id: u8,
     pub file_name: OsString,
+    pub expected_packet_count: usize,
 }
 ```
 
 - **Fields**:
   - `file_id` (`u8`): A unique identifier for the file.
   - `file_name` (`OsString`): The name of the file being transferred.
+  - `expected_packet_count` (`usize`): The total number of packets expected for the file.
 
 - **Usage**:
-  - The `Header` packet is used to initialize a file transfer. It provides the file's name and associates it with a unique `file_id`.
+  - The `Header` packet is used to initialize a file transfer. It provides the file's name, associates it with a unique `file_id`, and specifies the total number of packets expected.
 
 ---
 
@@ -74,8 +76,7 @@ impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        // Placeholder implementation
-        Err(PacketParseError::InvalidPacketFormat)
+        // Implementation for parsing raw bytes into Packet
     }
 }
 ```
@@ -117,8 +118,8 @@ pub struct PacketGroup {
 ```rust
 impl PacketGroup {
     pub fn process_packet(&mut self, packet: Packet);
-    pub fn received_all_packets(&self) -> bool;
-    pub fn write_file(&self) -> io::Result<()>;
+    pub fn all_packets_received(&self) -> bool;
+    pub fn write_file(&self) -> Result<(), PacketGroupError>;
 }
 ```
 
@@ -126,11 +127,12 @@ impl PacketGroup {
   - Adds a `Packet` to the `PacketGroup`.
   - Handles both `Header` and `Data` packets.
 
-- **`received_all_packets`**:
+- **`all_packets_received`**:
   - Checks if all expected packets have been received.
 
 - **`write_file`**:
   - Writes the assembled file to disk.
+  - Ensures all packets are present before writing.
 
 ---
 
@@ -144,7 +146,7 @@ The `FileManager` struct manages multiple `PacketGroup`s, one for each file bein
 
 ```rust
 pub struct FileManager {
-    files: HashMap<u8, PacketGroup>,
+    pub files: HashMap<u8, PacketGroup>,
 }
 ```
 
@@ -169,6 +171,7 @@ impl FileManager {
 
 - **`received_all_packets`**:
   - Checks if all files have been completely received.
+  - Ensures that all `PacketGroup`s have their `file_name` set and all packets received.
 
 - **`process_packet`**:
   - Routes a `Packet` to the appropriate `PacketGroup`.
@@ -197,9 +200,6 @@ pub enum PacketParseError {
   - `TooShort`: Indicates that the packet is too short to be valid.
   - `InvalidPacketFormat`: Indicates that the packet format is invalid.
 
-- **Usage**:
-  - Used in the `TryFrom<&[u8]>` implementation for `Packet`.
-
 ---
 
 #### **Enum: `ClientError`**
@@ -215,8 +215,24 @@ pub enum ClientError {
   - `IoError`: Wraps an I/O error.
   - `PacketParseError`: Wraps a `PacketParseError`.
 
-- **Usage**:
-  - Represents errors that can occur during the client's operation.
+---
+
+#### **Enum: `PacketGroupError`**
+
+```rust
+pub enum PacketGroupError {
+    MissingPacket(u16),
+    IoError(std::io::Error),
+    MissingFileName,
+    MissingPacketCount,
+}
+```
+
+- **Variants**:
+  - `MissingPacket(u16)`: Indicates that a specific packet is missing.
+  - `IoError`: Wraps an I/O error.
+  - `MissingFileName`: Indicates that the file name is missing.
+  - `MissingPacketCount`: Indicates that the expected packet count is missing.
 
 ---
 
@@ -267,7 +283,7 @@ fn main() -> Result<(), ClientError> {
 
 ### **File**: client_tests.sh
 
-This script runs unit tests for the client. Focus on testing:
+This script runs integration tests for the client. Focus on testing:
 
 - `Packet` parsing.
 - `PacketGroup` packet processing and file writing.

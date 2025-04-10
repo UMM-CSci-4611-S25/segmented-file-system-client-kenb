@@ -1,6 +1,9 @@
 # Segmented-File-Server-client <!-- omit in toc -->
 
+- *Lab completed by Ken Broden*
+
 [![CI - Unit Tests](https://github.com/UMM-CSci-4611-S25/segmented-file-system-client-kenb/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/UMM-CSci-4611-S25/segmented-file-system-client-kenb/actions/workflows/unit-tests.yml)
+
 [![CI - Bats Tests](https://github.com/UMM-CSci-4611-S25/segmented-file-system-client-kenb/actions/workflows/bats-tests.yml/badge.svg)](https://github.com/UMM-CSci-4611-S25/segmented-file-system-client-kenb/actions/workflows/bats-tests.yml)
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/wTmqQ3Sy)
