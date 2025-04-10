@@ -39,6 +39,7 @@ fn run_client() -> Result<(), ClientError> {
     let _ = sock.send(&buf[..1028]);
 
     let mut file_manager = FileManager::default();
+    let mut packets_received = 0; // Counter for received packets
 
     // keep looping until all packets have been received
     while !file_manager.received_all_packets() {
@@ -54,7 +55,11 @@ fn run_client() -> Result<(), ClientError> {
             }
         };
 
-        print!(".");
+        packets_received += 1; // Increment the counter
+        
+        // Dynamically calculate the width of the counter based on the number of digits
+        let width = packets_received.to_string().len();
+        print!("\rPackets received: [{:0width$}]", packets_received, width = width); // Dynamic counter
         // println!("Received packet: {:?}", packet);
         io::stdout().flush()?;
         file_manager.process_packet(packet);
