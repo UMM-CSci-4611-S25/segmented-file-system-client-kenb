@@ -1,0 +1,35 @@
+name: CI - Clippy Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  clippy:
+    name: Run Clippy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install Clippy
+        run: rustup component add clippy
+
+      - name: Run Clippy with specified warnings
+        run: |
+          cargo clippy -- -D clippy::pedantic \
+                          -D clippy::style \
+                          -D clippy::perf \
+                          -D clippy::complexity \
+                          -D clippy::correctness

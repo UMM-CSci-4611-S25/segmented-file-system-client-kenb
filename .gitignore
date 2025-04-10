@@ -1,1 +1,6 @@
 /target
+
+# Ignore test files created by bats tests
+src/small.txt
+src/AsYouLikeIt.txt
+src/binary.jpg
