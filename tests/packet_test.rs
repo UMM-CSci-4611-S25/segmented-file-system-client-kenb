@@ -3,6 +3,7 @@ use segmented_file_system_client::packet::Packet;
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
     use std::ffi::OsString;
 
@@ -96,4 +97,19 @@ mod tests {
             panic!("Expected Data packet");
         }
     }
+
+    // use segmented_file_system_client::packet::Header;
+    // #[test]
+    // fn emoji_in_file_name() {
+    //     let sparkle_heart: &[u8] = "\x00\x0CThis file is lovely 💖".as_bytes();
+    //     let result = Packet::try_from(sparkle_heart);
+    //     assert_eq!(
+    //         result,
+    //         Ok(Packet::Header(Header {
+    //             file_id: 12,
+    //             file_name: OsString::from("This file is lovely 💖"),
+    //             expected_packet_count: 0,
+    //         }))
+    //     );
+    // }
 }
