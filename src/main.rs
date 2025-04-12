@@ -2,6 +2,7 @@
 #![warn(clippy::perf)]
 #![warn(clippy::complexity)]
 #![warn(clippy::correctness)]
+#![warn(clippy::pedantic)]
 
 mod errors;
 mod file_manager;
@@ -43,7 +44,6 @@ fn run_client() -> Result<(), ClientError> {
 
     // keep looping until all packets have been received
     while !file_manager.received_all_packets() {
- 
         let len = sock.recv(&mut buf)?;
 
         let packet: Packet = match buf[..len].try_into() {
@@ -58,11 +58,14 @@ fn run_client() -> Result<(), ClientError> {
 
         // Dynamically calculate the width of the counter based on the number of digits
         let width = packets_received.to_string().len();
-        print!("\rPackets received: [{:>width$}]",
-            packets_received, 
-            width = width, // Use the calculated width
+        #[allow(clippy::uninlined_format_args)] // Can't find solution that compiles
+        {
+            print!(
+                "\rPackets received: [{:>width$}]",
+                packets_received, // Use the counter here
+                width = width,
             ); // Dynamic counter
-
+        }
         io::stdout().flush()?;
         file_manager.process_packet(packet);
     }
