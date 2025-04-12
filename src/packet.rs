@@ -69,7 +69,9 @@ impl TryFrom<&[u8]> for Header {
             String::from_utf8(value[2..].to_vec())
                 .map_err(|_| PacketParseError::InvalidPacketFormat)?,
         );
-        let expected_packet_count = u16::from_be_bytes([value[0], value[1]]) as usize;
+        
+        //let expected_packet_count = u16::from_be_bytes([value[0], value[1]]) as usize;
+        let expected_packet_count = 0;
 
         Ok(Header {
             file_id,
