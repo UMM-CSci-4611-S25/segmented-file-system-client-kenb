@@ -52,7 +52,7 @@ pub struct Data {
     pub file_id: u8,
     pub packet_number: u16,
     pub is_last_packet: bool,
-    pub data: Vec<u8>,
+    pub payload: Vec<u8>,
 }
 ```
 
@@ -60,7 +60,7 @@ pub struct Data {
   - `file_id` (`u8`): The unique identifier for the file this data belongs to.
   - `packet_number` (`u16`): The sequence number of this data packet.
   - `is_last_packet` (`bool`): Indicates whether this is the last packet for the file.
-  - `data` (`Vec<u8>`): The actual data chunk.
+  - `payload` (`Vec<u8>`): The actual data chunk.
 
 - **Usage**:
   - The `Data` packet contains a chunk of the file's data. The `packet_number` helps order the chunks, and `is_last_packet` signals the end of the file.

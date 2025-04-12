@@ -2,7 +2,8 @@ use std::{convert::TryFrom, ffi::OsString};
 
 use crate::errors::PacketParseError;
 
-const MIN_PACKET_SIZE: usize = 3; // Minimum size for a valid packet
+const HEADER_PACKET_SIZE: usize = 3;
+const DATA_PACKET_SIZE: usize = 4;
 
 #[derive(Debug)]
 pub enum Packet {
@@ -22,7 +23,7 @@ pub struct Data {
     pub file_id: u8,
     pub packet_number: u16,
     pub is_last_packet: bool,
-    pub data: Vec<u8>,
+    pub payload: Vec<u8>, // Renamed from 'data' to 'payload'
 }
 
 // TryFrom implementation for Packet (Top level packet type)
@@ -30,15 +31,12 @@ impl TryFrom<&[u8]> for Packet {
     type Error = PacketParseError;
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        // println!("Raw packet data: {:?}", value);
-
         // Check if the packet is too short
-        if value.len() < MIN_PACKET_SIZE {
+        if value.len() < HEADER_PACKET_SIZE {
             return Err(PacketParseError::TooShort);
         }
 
         let status_byte = value[0];
-        let _file_id = value[1];
 
         // Validate the status byte
         if status_byte & 0xFC != 0 {
@@ -61,7 +59,8 @@ impl TryFrom<&[u8]> for Header {
     type Error = PacketParseError;
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        if value.len() < 3 {
+        if value.len() < HEADER_PACKET_SIZE {
+            // This is redundant? Is checked in try_from for Packet
             return Err(PacketParseError::TooShort);
         }
 
@@ -71,11 +70,6 @@ impl TryFrom<&[u8]> for Header {
                 .map_err(|_| PacketParseError::InvalidPacketFormat)?,
         );
         let expected_packet_count = u16::from_be_bytes([value[0], value[1]]) as usize;
-
-        // println!(
-        //     "Parsed header packet: file_id = {}, file_name = {:?}",
-        //     file_id, file_name
-        // );
 
         Ok(Header {
             file_id,
@@ -90,25 +84,20 @@ impl TryFrom<&[u8]> for Data {
     type Error = PacketParseError;
 
     fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        if value.len() < 4 {
+        if value.len() < DATA_PACKET_SIZE {
             return Err(PacketParseError::TooShort);
         }
 
         let file_id = value[1];
         let packet_number = u16::from_be_bytes([value[2], value[3]]);
         let is_last_packet = value[0] & 0x02 != 0;
-        let data = value[4..].to_vec();
-
-        // println!(
-        //     "Parsed data packet: file_id = {}, packet_number = {}, is_last_packet = {}",
-        //     file_id, packet_number, is_last_packet
-        // );
+        let payload = value[4..].to_vec();
 
         Ok(Data {
             file_id,
             packet_number,
             is_last_packet,
-            data,
+            payload,
         })
     }
 }

@@ -26,7 +26,7 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: false,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
         packet_group.process_packet(data_packet);
         assert_eq!(packet_group.packets.len(), 1);
@@ -89,7 +89,7 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: true,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
 
         packet_group.process_packet(header_packet);

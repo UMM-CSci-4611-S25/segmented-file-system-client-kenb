@@ -27,7 +27,7 @@ mod tests {
             assert_eq!(data.file_id, 1);
             assert_eq!(data.packet_number, 1);
             assert!(data.is_last_packet);
-            assert_eq!(data.data, b"data".to_vec());
+            assert_eq!(data.payload, b"data".to_vec());
         } else {
             panic!("Expected Data packet");
         }
@@ -63,7 +63,7 @@ mod tests {
             assert_eq!(data.file_id, 1);
             assert_eq!(data.packet_number, 0);
             assert_eq!(data.is_last_packet, false);
-            assert!(data.data.is_empty());
+            assert!(data.payload.is_empty());
         } else {
             panic!("Expected Data packet");
         }
@@ -77,7 +77,7 @@ mod tests {
             assert_eq!(data.file_id, 1);
             assert_eq!(data.packet_number, 1);
             assert!(data.is_last_packet);
-            assert_eq!(data.data, b"data".to_vec());
+            assert_eq!(data.payload, b"data".to_vec());
         } else {
             panic!("Expected Data packet");
         }
@@ -92,7 +92,7 @@ mod tests {
             assert_eq!(data.file_id, 1);
             assert_eq!(data.packet_number, 1);
             assert_eq!(data.is_last_packet, false);
-            assert_eq!(data.data.len(), 1024);
+            assert_eq!(data.payload.len(), 1024);
         } else {
             panic!("Expected Data packet");
         }

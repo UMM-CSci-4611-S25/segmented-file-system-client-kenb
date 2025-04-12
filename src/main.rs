@@ -1,7 +1,7 @@
-// Below is a version of the `main` function and some error types. This assumes
-// the existence of types like `FileManager`, `Packet`, and `PacketParseError`.
-// You can use this code as a starting point for the exercise, or you can
-// delete it and write your own code with the same function signature.
+#![warn(clippy::style)]
+#![warn(clippy::perf)]
+#![warn(clippy::complexity)]
+#![warn(clippy::correctness)]
 
 mod errors;
 mod file_manager;
@@ -21,18 +21,18 @@ const REMOTE_ADDR: &str = "127.0.0.1:6014";
 fn main() {
     if let Err(e) = run_client() {
         match e {
-            ClientError::IoError(err) => eprintln!("IO error: {}", err),
-            ClientError::PacketParseError(err) => eprintln!("Packet parse error: {:?}", err),
+            ClientError::IoError(err) => eprintln!("IO error: {err}"),
+            ClientError::PacketParseError(err) => eprintln!("Packet parse error: {err:?}"),
         }
     }
 }
 
 fn run_client() -> Result<(), ClientError> {
     let sock = UdpSocket::bind(LOCAL_ADDR)?;
-    println!("Listening on {}", LOCAL_ADDR);
+    println!("Listening on {LOCAL_ADDR}");
 
     sock.connect(REMOTE_ADDR)?;
-    println!("Connected to {}", REMOTE_ADDR);
+    println!("Connected to {REMOTE_ADDR}");
     println!("Waiting for packets...");
 
     let mut buf = [0; 1028];
@@ -43,24 +43,26 @@ fn run_client() -> Result<(), ClientError> {
 
     // keep looping until all packets have been received
     while !file_manager.received_all_packets() {
-        // println!("Waiting to receive a packet...");
+ 
         let len = sock.recv(&mut buf)?;
-        // println!("Received {} bytes: {:?}", len, &buf[..len]);
 
         let packet: Packet = match buf[..len].try_into() {
             Ok(packet) => packet,
             Err(e) => {
-                eprintln!("Error parsing packet: {:?}", e);
+                eprintln!("Error parsing packet: {e:?}");
                 continue;
             }
         };
 
         packets_received += 1; // Increment the counter
-        
+
         // Dynamically calculate the width of the counter based on the number of digits
         let width = packets_received.to_string().len();
-        print!("\rPackets received: [{:0width$}]", packets_received, width = width); // Dynamic counter
-        // println!("Received packet: {:?}", packet);
+        print!("\rPackets received: [{:>width$}]",
+            packets_received, 
+            width = width, // Use the calculated width
+            ); // Dynamic counter
+
         io::stdout().flush()?;
         file_manager.process_packet(packet);
     }

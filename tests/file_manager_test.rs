@@ -24,7 +24,7 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: true,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
 
         file_manager.process_packet(header_packet);
@@ -48,13 +48,13 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: false,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
         let data_packet2 = Packet::Data(Data {
             file_id: 1,
             packet_number: 1,
             is_last_packet: true,
-            data: vec![4, 5, 6],
+            payload: vec![4, 5, 6],
         });
 
         file_manager.process_packet(header_packet);
@@ -81,7 +81,7 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: false,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
 
         file_manager.process_packet(data_packet);
@@ -108,7 +108,7 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: true,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
 
         file_manager.process_packet(header_packet);
@@ -132,13 +132,13 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: true,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
         let data_packet2 = Packet::Data(Data {
             file_id: 1,
             packet_number: 1,
             is_last_packet: false,
-            data: vec![4, 5, 6],
+            payload: vec![4, 5, 6],
         });
 
         file_manager.process_packet(header_packet);
@@ -188,7 +188,7 @@ mod tests {
             file_id: 1,
             packet_number: 0,
             is_last_packet: true,
-            data: vec![1, 2, 3],
+            payload: vec![1, 2, 3],
         });
 
         file_manager.process_packet(header_packet);

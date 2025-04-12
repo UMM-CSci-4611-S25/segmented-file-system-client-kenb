@@ -36,10 +36,10 @@ impl std::fmt::Display for PacketGroupError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             PacketGroupError::MissingPacket(packet_number) => {
-                write!(f, "Missing packet: {}", packet_number)
+                write!(f, "Missing packet: {packet_number}")
             }
             PacketGroupError::MissingFileName => write!(f, "Missing file name"),
-            PacketGroupError::IoError(err) => write!(f, "IO error: {}", err),
+            PacketGroupError::IoError(err) => write!(f, "IO error: {err}"),
             PacketGroupError::MissingPacketCount => write!(f, "Missing packet count"),
         }
     }
